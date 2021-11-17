@@ -31,13 +31,13 @@ class _LoginSpotiState extends State<LoginSpoti> {
           spDcc = item.value.toString();
           prefs.setString('sp_dc', item.value.toString());
 
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (BuildContext context) => MyHomePage(
-                spDc: spDcc,
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (BuildContext context) => MyHomePage(
+                  spDc: spDcc,
+                ),
               ),
-            ),
-          );
+              ModalRoute.withName('/'));
         });
 
         return item.value.toString();

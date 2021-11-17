@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotibuddy/consumable_store.dart';
+import 'package:spotibuddy/screens/ads.dart';
 import 'package:spotibuddy/screens/splash.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
@@ -40,6 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String searchString = "";
   late BannerAd myBanner;
   BannerAd? _anchoredBanner;
+
+  List<String> consumables = [];
 
   InterstitialAd? _interstitialAd;
   int _numInterstitialLoadAttempts = 0;
@@ -122,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  void initState() {
+  initState() {
     super.initState();
 
     final BannerAd banner = BannerAd(
@@ -144,7 +151,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     banner.load();
 
-    _createInterstitialAd();
+    if (consumables.isEmpty) {
+      _createInterstitialAd();
+    }
   }
 
   @override
@@ -165,7 +174,10 @@ class _MyHomePageState extends State<MyHomePage> {
             _interstitialAd = ad;
             _numInterstitialLoadAttempts = 0;
             _interstitialAd!.setImmersiveMode(true);
-            _showInterstitialAd();
+            //_showInterstitialAd();
+            if (consumables.isEmpty) {
+              _interstitialAd!.show();
+            }
           },
           onAdFailedToLoad: (LoadAdError error) {
             _numInterstitialLoadAttempts += 1;
@@ -177,47 +189,120 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  void _showInterstitialAd() {
-    if (_interstitialAd == null) {
-      return;
-    }
-    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        ad.dispose();
-        _createInterstitialAd();
-      },
-      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        ad.dispose();
-        _createInterstitialAd();
-      },
-    );
-    _interstitialAd!.show();
-    _interstitialAd = null;
+  payforAds(BuildContext context, stack) {
+    showModalBottomSheet<void>(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: const Color(0xff292929),
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: 70,
+                height: 5,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: const Color(0xffcccccc),
+                      borderRadius: BorderRadius.circular(50)),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.all(13),
+                child: Center(
+                  child: Column(
+                    children: const [
+                      Text(
+                        "An ad-free experience?",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(height: 3),
+                      Text(
+                        "We know ads are annoying. You can get away with it for just one cup of coffee fee.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 150,
+                child: stack,
+              ),
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
+    ConsumableStore.load().then((value) {
+      consumables = value;
+    });
+
     return Scaffold(
       backgroundColor: const Color(0xff121212),
       appBar: AppBar(
-        toolbarHeight: 0,
         elevation: 0,
+        backgroundColor: const Color(0xff121212),
+        actions: [
+          consumables.isNotEmpty
+              ? IconButton(
+                  onPressed: () {
+                    Fluttertoast.showToast(
+                      msg: "Thanks for your purchase",
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.upgrade_outlined,
+                    color: Colors.green,
+                    size: 32,
+                  ))
+              : TextButton.icon(
+                  onPressed: () {
+                    payforAds(context, const AppPurchase());
+                  },
+                  icon: Image.asset(
+                    "assets/images/no.png",
+                    width: 28,
+                  ),
+                  label: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade800,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: const Text(
+                        "Remove Ads",
+                        style: TextStyle(color: Colors.white),
+                      )))
+        ],
       ),
-      bottomNavigationBar: SizedBox(
-        height: 60.0,
-        child: Column(
-          children: [
-            if (_anchoredBanner != null) ...[
-              Container(
-                color: Colors.green,
-                width: _anchoredBanner!.size.width.toDouble(),
-                height: _anchoredBanner!.size.height.toDouble(),
-                child: AdWidget(ad: _anchoredBanner!),
+      bottomNavigationBar: consumables.isEmpty
+          ? SizedBox(
+              height: 60.0,
+              child: Column(
+                children: [
+                  if (_anchoredBanner != null && consumables.isEmpty) ...[
+                    Container(
+                      color: Colors.green,
+                      width: _anchoredBanner!.size.width.toDouble(),
+                      height: _anchoredBanner!.size.height.toDouble(),
+                      child: AdWidget(ad: _anchoredBanner!),
+                    ),
+                  ]
+                ],
               ),
-            ]
-          ],
-        ),
-      ),
+            )
+          : const SizedBox(height: 0, width: 0),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
@@ -225,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const SizedBox(height: 70),
+              const SizedBox(height: 40),
               const Text(
                 "SpotiBuddies",
                 style: TextStyle(

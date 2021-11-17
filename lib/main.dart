@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spotibuddy/screens/splash.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:flutter/foundation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +26,11 @@ Future<void> main() async {
   OneSignal.shared
       .promptUserForPushNotificationPermission()
       .then((accepted) {});
+
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
 
   runApp(const MyApp());
 }
