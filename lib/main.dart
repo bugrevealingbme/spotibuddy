@@ -27,8 +27,7 @@ Future<void> main() async {
       .promptUserForPushNotificationPermission()
       .then((accepted) {});
 
-
-    if (defaultTargetPlatform == TargetPlatform.android) {
+  if (defaultTargetPlatform == TargetPlatform.android) {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
   }
 
@@ -41,7 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SpotiBuddy',
+      title: 'SpotiBuddies',
       theme: ThemeData(
         fontFamily: 'TTCommons',
         primarySwatch: Colors.green,
@@ -55,8 +54,10 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black,
           systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Color(0xff121212),
-              statusBarIconBrightness: Brightness.light),
+            statusBarColor: Color(0xff121212),
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
+          ),
         ),
       ),
       debugShowCheckedModeBanner: false,

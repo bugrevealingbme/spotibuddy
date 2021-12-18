@@ -137,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
       request: const AdRequest(),
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-3753684966275105/6352534282'
-          : 'ca-app-pub-3753684966275105/6352534282',
+          : 'ca-app-pub-3753684966275105/9012194471',
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
           setState(() {
@@ -167,7 +167,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _createInterstitialAd() {
     InterstitialAd.load(
-        adUnitId: "ca-app-pub-3753684966275105/3717813846",
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-3753684966275105/3717813846'
+            : 'ca-app-pub-3753684966275105/1708419522',
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
@@ -254,36 +256,38 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         backgroundColor: const Color(0xff121212),
         actions: [
-          consumables.isNotEmpty
-              ? IconButton(
-                  onPressed: () {
-                    Fluttertoast.showToast(
-                      msg: "Thanks for your purchase",
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.upgrade_outlined,
-                    color: Colors.green,
-                    size: 32,
-                  ))
-              : TextButton.icon(
-                  onPressed: () {
-                    payforAds(context, const AppPurchase());
-                  },
-                  icon: Image.asset(
-                    "assets/images/no.png",
-                    width: 28,
-                  ),
-                  label: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade800,
-                        borderRadius: BorderRadius.circular(50),
+          Platform.isAndroid
+              ? consumables.isNotEmpty
+                  ? IconButton(
+                      onPressed: () {
+                        Fluttertoast.showToast(
+                          msg: "Thanks for your purchase",
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.upgrade_outlined,
+                        color: Colors.green,
+                        size: 32,
+                      ))
+                  : TextButton.icon(
+                      onPressed: () {
+                        payforAds(context, const AppPurchase());
+                      },
+                      icon: Image.asset(
+                        "assets/images/no.png",
+                        width: 28,
                       ),
-                      child: const Text(
-                        "Remove Ads",
-                        style: TextStyle(color: Colors.white),
-                      )))
+                      label: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade800,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: const Text(
+                            "Remove Ads",
+                            style: TextStyle(color: Colors.white),
+                          )))
+              : Container()
         ],
       ),
       bottomNavigationBar: consumables.isEmpty
@@ -312,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               const SizedBox(height: 40),
               const Text(
-                "SpotiBuddies",
+                "Friends Activity",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,
