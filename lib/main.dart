@@ -45,8 +45,11 @@ class MyApp extends StatelessWidget {
         fontFamily: 'TTCommons',
         primarySwatch: Colors.green,
         textTheme: const TextTheme(
-          bodyText1: TextStyle(),
-          bodyText2: TextStyle(),
+          bodyText1: TextStyle(color: Colors.white),
+          bodyText2: TextStyle(color: Colors.white),
+          button: TextStyle(color: Colors.white),
+          subtitle1: TextStyle(color: Colors.white),
+          subtitle2: TextStyle(color: Colors.white),
         ).apply(
           bodyColor: Colors.white,
           displayColor: Colors.white,

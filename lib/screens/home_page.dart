@@ -340,9 +340,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: InputDecoration(
                     hintText: "Find Friends",
                     hintStyle: const TextStyle(
-                        color: Color(0xff8f8f8f),
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold),
+                      color: Color(0xff8f8f8f),
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 0.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
