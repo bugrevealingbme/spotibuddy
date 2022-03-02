@@ -66,6 +66,7 @@ class _LoginSpotiState extends State<LoginSpoti> {
     super.dispose();
   }
 
+  int pos = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,13 +77,31 @@ class _LoginSpotiState extends State<LoginSpoti> {
           title: const Text("Login"),
           centerTitle: true,
           foregroundColor: Colors.white),
-      body: const WebView(
-        initialUrl:
-            "https://accounts.spotify.com/en/login?continue=https:%2F%2Fopen.spotify.com%2F",
-        javascriptMode: JavascriptMode.unrestricted,
-        allowsInlineMediaPlayback: true,
-        initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
-        userAgent: "random",
+      body: IndexedStack(
+        index: pos,
+        children: <Widget>[
+          WebView(
+            initialUrl:
+                "https://accounts.spotify.com/en/login?continue=https:%2F%2Fopen.spotify.com%2F",
+            javascriptMode: JavascriptMode.unrestricted,
+            allowsInlineMediaPlayback: true,
+            initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
+            onPageStarted: (value) {
+              setState(() {
+                pos = 1;
+              });
+            },
+            onPageFinished: (value) {
+              setState(() {
+                pos = 0;
+              });
+            },
+            userAgent: "random",
+          ),
+          Container(
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ],
       ),
     );
   }
