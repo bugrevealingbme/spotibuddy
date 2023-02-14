@@ -25,7 +25,7 @@ class _LoginAppState extends State<LoginApp> {
     return Scaffold(
       backgroundColor: const Color(0xff121212),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0,
         toolbarHeight: 0,
       ),
@@ -77,12 +77,12 @@ class _LoginAppState extends State<LoginApp> {
                               fontWeight: FontWeight.bold,
                               color: Color(0xff111111))),
                       style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: const Color(0xff23c45e),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 50, vertical: 20),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)),
-                          onPrimary: Colors.white,
-                          primary: const Color(0xff23c45e)),
+                              borderRadius: BorderRadius.circular(50))),
                     ),
                   )
                 ],

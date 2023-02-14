@@ -1,6 +1,5 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spotibuddy/screens/splash.dart';
@@ -45,11 +44,11 @@ class MyApp extends StatelessWidget {
         fontFamily: 'TTCommons',
         primarySwatch: Colors.green,
         textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Colors.white),
-          bodyText2: TextStyle(color: Colors.white),
-          button: TextStyle(color: Colors.white),
-          subtitle1: TextStyle(color: Colors.white),
-          subtitle2: TextStyle(color: Colors.white),
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
+          labelLarge: TextStyle(color: Colors.white),
+          titleMedium: TextStyle(color: Colors.white),
+          titleSmall: TextStyle(color: Colors.white),
         ).apply(
           bodyColor: Colors.white,
           displayColor: Colors.white,

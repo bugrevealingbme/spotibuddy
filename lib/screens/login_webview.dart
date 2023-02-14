@@ -52,7 +52,7 @@ class _LoginSpotiState extends State<LoginSpoti> {
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
 
-    Timer timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    Timer.periodic(const Duration(seconds: 3), (timer) {
       getCookie();
 
       if (spDcc.toString().isNotEmpty) {
@@ -98,9 +98,7 @@ class _LoginSpotiState extends State<LoginSpoti> {
             },
             userAgent: "random",
           ),
-          Container(
-            child: Center(child: CircularProgressIndicator()),
-          ),
+          const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

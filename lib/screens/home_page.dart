@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotibuddy/consumable_store.dart';
@@ -161,7 +159,9 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
     try {
       myBanner.dispose();
-    } catch (e) {}
+    } catch (e) {
+      //
+    }
     _interstitialAd?.dispose();
   }
 
@@ -383,12 +383,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: const Color(0xff282828),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 13),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            onPrimary: Colors.white,
-                            primary: const Color(0xff282828))),
+                                borderRadius: BorderRadius.circular(5)))),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -402,12 +402,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: const Color(0xff282828),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 13),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            onPrimary: Colors.white,
-                            primary: const Color(0xff282828))),
+                                borderRadius: BorderRadius.circular(5)))),
                   ),
                 ],
               ),

@@ -5,10 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:in_app_purchase_ios/in_app_purchase_ios.dart';
-import 'package:in_app_purchase_ios/store_kit_wrappers.dart';
-import 'package:spotibuddy/consumable_store.dart';
-import 'package:spotibuddy/screens/home_page.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import '../consumable_store.dart';
 
 const bool _kAutoConsume = true;
 
@@ -67,8 +66,9 @@ class AppPurchaseState extends State<AppPurchase> {
     }
 
     if (Platform.isIOS) {
-      var iosPlatformAddition = _inAppPurchase
-          .getPlatformAddition<InAppPurchaseIosPlatformAddition>();
+      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+          _inAppPurchase
+              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
     }
 
@@ -116,8 +116,9 @@ class AppPurchaseState extends State<AppPurchase> {
   @override
   void dispose() {
     if (Platform.isIOS) {
-      var iosPlatformAddition = _inAppPurchase
-          .getPlatformAddition<InAppPurchaseIosPlatformAddition>();
+      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+          _inAppPurchase
+              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       iosPlatformAddition.setDelegate(null);
     }
     _subscription.cancel();
@@ -176,7 +177,7 @@ class AppPurchaseState extends State<AppPurchase> {
         const Divider(),
         ListTile(
           title: Text('Not connected',
-              style: TextStyle(color: ThemeData.light().errorColor)),
+              style: TextStyle(color: ThemeData.light().colorScheme.error)),
           subtitle: const Text(
               'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.'),
         ),
@@ -203,7 +204,7 @@ class AppPurchaseState extends State<AppPurchase> {
     if (_notFoundIds.isNotEmpty) {
       productList.add(ListTile(
         title: Text('[${_notFoundIds.join(", ")}] not found',
-            style: TextStyle(color: ThemeData.light().errorColor)),
+            style: TextStyle(color: ThemeData.light().colorScheme.error)),
       ));
     }
 
@@ -220,7 +221,6 @@ class AppPurchaseState extends State<AppPurchase> {
 
     productList.addAll(_products.map(
       (ProductDetails productDetails) {
-        PurchaseDetails? previousPurchase = purchases[productDetails.id];
         return ElevatedButton(
             onPressed: () {
               late PurchaseParam purchaseParam;
@@ -312,43 +312,6 @@ class AppPurchaseState extends State<AppPurchase> {
     return Column(children: productList);
   }
 
-  Card _buildConsumableBox() {
-    if (_loading) {
-      return const Card(
-          child: (ListTile(
-              leading: CircularProgressIndicator(),
-              title: Text('Fetching consumables...'))));
-    }
-    if (!_isAvailable || _notFoundIds.contains(_kConsumableId)) {
-      return const Card();
-    }
-    const ListTile consumableHeader =
-        ListTile(title: Text('Purchased consumables'));
-    final List<Widget> tokens = _consumables.map((String id) {
-      return GridTile(
-        child: TextButton.icon(
-          icon: const Icon(
-            Icons.stars,
-            color: Colors.orange,
-          ),
-          label: Text(id),
-          onPressed: () => consume(id),
-        ),
-      );
-    }).toList();
-    return Card(
-        child: Column(children: <Widget>[
-      consumableHeader,
-      const Divider(),
-      GridView.count(
-        crossAxisCount: 2,
-        children: tokens,
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(16.0),
-      )
-    ]));
-  }
-
   Widget _buildRestoreButton() {
     if (_loading) {
       return Container();
@@ -361,12 +324,23 @@ class AppPurchaseState extends State<AppPurchase> {
         TextButton(
           child: const Text('Restore purchases'),
           style: TextButton.styleFrom(
-            primary: Theme.of(context).primaryColor,
+            foregroundColor: Theme.of(context).primaryColor,
           ),
           onPressed: () async {
-            await InAppPurchase.instance.restorePurchases();
+            final List<PurchaseDetails> purchasedList = [];
+            final Stream<List<PurchaseDetails>> purchaseUpdated =
+                _inAppPurchase.purchaseStream;
+
+            _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+              purchasedList.addAll(purchaseDetailsList);
+            }, onDone: () {
+              _subscription.cancel();
+            }, onError: (error) {
+              // handle error here.
+            });
 
             _inAppPurchase.restorePurchases();
+
             Navigator.of(context).pop();
             Fluttertoast.showToast(
                 msg:
@@ -427,7 +401,6 @@ class AppPurchaseState extends State<AppPurchase> {
   }
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    print("cailsit" + purchaseDetailsList.toString());
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
       if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
@@ -484,9 +457,10 @@ class AppPurchaseState extends State<AppPurchase> {
       }
     }
     if (Platform.isIOS) {
-      var iapIosPlatformAddition = _inAppPurchase
-          .getPlatformAddition<InAppPurchaseIosPlatformAddition>();
-      await iapIosPlatformAddition.showPriceConsentIfNeeded();
+      final InAppPurchaseStoreKitPlatformAddition iapStoreKitPlatformAddition =
+          _inAppPurchase
+              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      await iapStoreKitPlatformAddition.showPriceConsentIfNeeded();
     }
   }
 
