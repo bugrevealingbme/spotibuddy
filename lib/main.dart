@@ -41,7 +41,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SpotiBuddies',
       theme: ThemeData(
-        fontFamily: 'TTCommons',
         primarySwatch: Colors.green,
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.white),
