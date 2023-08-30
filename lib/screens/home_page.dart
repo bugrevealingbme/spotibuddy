@@ -26,13 +26,13 @@ String convertToAgo(DateTime input) {
   Duration diff = DateTime.now().difference(input);
 
   if (diff.inDays >= 1) {
-    return diff.inDays.toString() + ' days ago';
+    return '${diff.inDays} days ago';
   } else if (diff.inHours >= 1) {
-    return diff.inHours.toString() + ' hours ago';
+    return '${diff.inHours} hours ago';
   } else if (diff.inMinutes >= 1) {
-    return diff.inMinutes.toString() + ' min ago';
+    return '${diff.inMinutes} min ago';
   } else if (diff.inSeconds >= 1) {
-    return diff.inSeconds.toString() + ' sec ago';
+    return '${diff.inSeconds} sec ago';
   } else {
     return 'just now';
   }
@@ -73,9 +73,9 @@ class _MyHomePageState extends State<MyHomePage> {
     if (spDcc.isEmpty) {
       _restartDialog();
     }
-    debugPrint("Bome:" + spDcc.toString());
+    debugPrint("Bome:$spDcc");
     final response = await http.get(
-      Uri.parse('https://spotibuddy.metareverse.net/?cookie=' + spDcc),
+      Uri.parse('https://spotibuddy.metareverse.net/?cookie=$spDcc'),
       headers: {HttpHeaders.authorizationHeader: 'Lxw42HRYaQtgFXZF2'},
     );
 
@@ -93,9 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Sorry for this notification.'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text(
                     "Spotify can sometimes refresh and reset entries. Therefore, your entry has been invalidated. We're restarting the app for you to log in again, thanks for your understanding."),
               ],
@@ -119,10 +119,16 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('sp_dc', "");
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (BuildContext context) => const SplashScreen(),
-      ),
+    Future.delayed(
+      Duration.zero,
+      () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const SplashScreen(),
+          ),
+        );
+      },
     );
   }
 
@@ -216,11 +222,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(13),
+              const Padding(
+                padding: EdgeInsets.all(13),
                 child: Center(
                   child: Column(
-                    children: const [
+                    children: [
                       Text(
                         "An ad-free experience?",
                         style: TextStyle(fontSize: 20),
@@ -377,18 +383,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () async {
                           await launchApp("spotify:home");
                         },
-                        child: const Text(
-                          "Spotify",
-                          maxLines: 1,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
                         style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: const Color(0xff282828),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 13),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)))),
+                                borderRadius: BorderRadius.circular(5))),
+                        child: const Text(
+                          "Spotify",
+                          maxLines: 1,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -396,18 +402,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () async {
                           await launchApp("spotify:search");
                         },
-                        child: const Text(
-                          "Add Friend",
-                          maxLines: 1,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
                         style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: const Color(0xff282828),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 13),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)))),
+                                borderRadius: BorderRadius.circular(5))),
+                        child: const Text(
+                          "Add Friend",
+                          maxLines: 1,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
                   ),
                 ],
               ),
@@ -508,11 +514,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  " • " +
-                                                      convertToAgo(DateTime
-                                                          .fromMillisecondsSinceEpoch(
-                                                              data[index][
-                                                                  'timestamp'])),
+                                                  " • ${convertToAgo(DateTime.fromMillisecondsSinceEpoch(data[index]['timestamp']))}",
                                                   style: const TextStyle(
                                                       fontSize: 12,
                                                       fontWeight:

@@ -322,7 +322,6 @@ class AppPurchaseState extends State<AppPurchase> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextButton(
-          child: const Text('Restore purchases'),
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).primaryColor,
           ),
@@ -347,6 +346,7 @@ class AppPurchaseState extends State<AppPurchase> {
                     "Purchase restored. It may be necessary to restart the application.");
             setState(() {});
           },
+          child: const Text('Restore purchases'),
         ),
         const SizedBox(height: 15)
       ],
@@ -435,27 +435,6 @@ class AppPurchaseState extends State<AppPurchase> {
   }
 
   Future<void> confirmPriceChange(BuildContext context) async {
-    if (Platform.isAndroid) {
-      final InAppPurchaseAndroidPlatformAddition androidAddition =
-          _inAppPurchase
-              .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
-      var priceChangeConfirmationResult =
-          await androidAddition.launchPriceChangeConfirmationFlow(
-        sku: 'purchaseId',
-      );
-      if (priceChangeConfirmationResult.responseCode == BillingResponse.ok) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Price change accepted'),
-        ));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            priceChangeConfirmationResult.debugMessage ??
-                "Price change failed with code ${priceChangeConfirmationResult.responseCode}",
-          ),
-        ));
-      }
-    }
     if (Platform.isIOS) {
       final InAppPurchaseStoreKitPlatformAddition iapStoreKitPlatformAddition =
           _inAppPurchase

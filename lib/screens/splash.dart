@@ -9,10 +9,10 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  SplashScreenState createState() => SplashScreenState();
 }
 
-class _SplashScreenState extends State {
+class SplashScreenState extends State {
   @override
   void initState() {
     super.initState();
@@ -34,11 +34,11 @@ class _SplashScreenState extends State {
         elevation: 0,
         toolbarHeight: 0,
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
+          children: [
             CircularProgressIndicator(),
           ],
         ),

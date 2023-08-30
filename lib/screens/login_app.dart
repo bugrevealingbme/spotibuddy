@@ -6,10 +6,10 @@ class LoginApp extends StatefulWidget {
   const LoginApp({Key? key}) : super(key: key);
 
   @override
-  _LoginAppState createState() => _LoginAppState();
+  LoginAppState createState() => LoginAppState();
 }
 
-class _LoginAppState extends State<LoginApp> {
+class LoginAppState extends State<LoginApp> {
   @override
   void initState() {
     super.initState();
@@ -71,11 +71,6 @@ class _LoginAppState extends State<LoginApp> {
                             CupertinoPageRoute(
                                 builder: (context) => const LoginSpoti()));
                       },
-                      child: const Text("Log in with Spotify",
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xff111111))),
                       style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: const Color(0xff23c45e),
@@ -83,6 +78,11 @@ class _LoginAppState extends State<LoginApp> {
                               horizontal: 50, vertical: 20),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
+                      child: const Text("Log in with Spotify",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff111111))),
                     ),
                   )
                 ],
